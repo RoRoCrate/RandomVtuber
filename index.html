@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>テスト用</title>
+</head>
+<body>
+
+<h2>抽選中...</h2>
+
+<script>
+const links = [
+    "https://youtu.be/qlVXVsyYkww",
+    "https://youtu.be/bU25k_CpRRU",
+    "https://youtu.be/yC7MHy5svHw"
+];
+
+const STORAGE_KEY = "nfcHistory";
+
+// 履歴取得
+let history;
+try {
+    history = JSON.parse(localStorage.getItem(STORAGE_KEY));
+} catch {
+    history = [];
+}
+
+if (!Array.isArray(history)) {
+    history = [];
+}
+
+// 未出現リンク
+let remaining = links.filter(link => !history.includes(link));
+
+// 全て出たらリセット
+if (remaining.length === 0) {
+    history = [];
+    remaining = [...links];
+}
+
+// ランダム選択
+const selected = remaining[Math.floor(Math.random() * remaining.length)];
+
+// 保存
+history.push(selected);
+localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+
+// 0.5秒表示してから移動（デバッグしやすい）
+document.querySelector("h2").textContent = "移動中...";
+
+setTimeout(() => {
+    location.replace(selected);
+}, 500);
+</script>
+
+</body>
+</html>
